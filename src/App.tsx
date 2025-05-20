@@ -60,6 +60,15 @@ function getRandomQuestionForSubcategory(category: string, subcategory: string):
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
+function getUserId() {
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = crypto.randomUUID();
+    localStorage.setItem('userId', userId);
+  }
+  return userId;
+}
+
 function App() {
   const [essay, setEssay] = useState('');
   const [analysis, setAnalysis] = useState<string | null>(null);
@@ -97,11 +106,19 @@ function App() {
     setAudioBase64(null);
   }, [mode]);
 
+  const userId = getUserId();
+
   useEffect(() => {
-    fetchMistakesByRange(mistakeRange)
-      .then(setVisualizationNotes)
-      .catch(() => setVisualizationNotes([]));
-  }, [mistakeRange]);
+    if (mistakeRange === 'current' || mistakeRange === '7days' || mistakeRange === '30days') {
+      fetchMistakesByRange(mistakeRange, userId, mode)
+        .then(setVisualizationNotes)
+        .catch(() => setVisualizationNotes([]));
+    } else {
+      fetchMistakesByRange(mistakeRange, userId)
+        .then(setVisualizationNotes)
+        .catch(() => setVisualizationNotes([]));
+    }
+  }, [mistakeRange, userId, mode]);
 
   const selectedQuestion = questions.find(q => q.id === selectedQuestionId);
 
@@ -129,7 +146,7 @@ function App() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ essay, questionId: selectedQuestionId }),
+        body: JSON.stringify({ essay, questionId: selectedQuestionId, userId }),
       });
       if (!response.ok) throw new Error('Failed to analyze essay');
       const data = await response.json();
@@ -139,7 +156,7 @@ function App() {
       setNotes(parsedNotes);
       // Refresh visualization if showing current attempt
       if (mistakeRange === 'current') {
-        fetchMistakesByRange('current')
+        fetchMistakesByRange('current', userId, mode)
           .then(setVisualizationNotes)
           .catch(() => setVisualizationNotes([]));
       }
@@ -159,7 +176,7 @@ function App() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questionId: selectedQuestionId, mode: 'speaking', audioBase64 }),
+        body: JSON.stringify({ questionId: selectedQuestionId, mode: 'speaking', audioBase64, userId }),
       });
       if (!response.ok) throw new Error('Failed to analyze speaking answer');
       const data = await response.json();
@@ -169,7 +186,7 @@ function App() {
       setNotes(parsedNotes);
       // Refresh visualization if showing current attempt
       if (mistakeRange === 'current') {
-        fetchMistakesByRange('current')
+        fetchMistakesByRange('current', userId, mode)
           .then(setVisualizationNotes)
           .catch(() => setVisualizationNotes([]));
       }
@@ -306,7 +323,7 @@ function App() {
             <div style={{ marginBottom: 12 }}>
               <label style={{ fontWeight: 500, marginRight: 8 }}>Show mistakes from:</label>
               <select value={mistakeRange} onChange={e => setMistakeRange(e.target.value as any)}>
-                <option value="current">Current Attempt</option>
+                <option value="current">Most Recent</option>
                 <option value="7days">Last 7 Days</option>
                 <option value="30days">Last 30 Days</option>
               </select>

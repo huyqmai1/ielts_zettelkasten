@@ -6,6 +6,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const tmp = require('tmp');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -44,20 +45,22 @@ try {
   console.error('Failed to load IELTS speaking questions database:', e);
 }
 
-// Path for user data (single user for now)
-const userDataPath = path.join(__dirname, './user_data.json');
-
-// Helper: Load user data
-function loadUserData() {
-  try {
-    return JSON.parse(fs.readFileSync(userDataPath, 'utf-8'));
-  } catch (e) {
-    return { attempts: [] };
-  }
+const USER_DATA_DIR = path.join(__dirname, 'user_data');
+if (!fs.existsSync(USER_DATA_DIR)) {
+  fs.mkdirSync(USER_DATA_DIR);
 }
-// Helper: Save user data
-function saveUserData(data) {
-  fs.writeFileSync(userDataPath, JSON.stringify(data, null, 2), 'utf-8');
+
+function loadUserData(userId) {
+  const filePath = path.join(USER_DATA_DIR, `${userId}.json`);
+  if (fs.existsSync(filePath)) {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  }
+  return {};
+}
+
+function saveUserData(userId, data) {
+  const filePath = path.join(USER_DATA_DIR, `${userId}.json`);
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
 // Helper: Get mistakes from attempts in a date range
@@ -237,7 +240,8 @@ app.post('/api/analyze', async (req, res) => {
     }
     const mistakes = parseNotesFromAnalysis(analysis);
     // Log attempt to user_data.json
-    const userData = loadUserData();
+    const userId = req.body.userId || uuidv4();
+    const userData = loadUserData(userId);
     const attempt = {
       timestamp: Date.now(),
       essay: transcript,
@@ -246,8 +250,9 @@ app.post('/api/analyze', async (req, res) => {
       mistakes,
       mode,
     };
+    if (!userData.attempts) userData.attempts = [];
     userData.attempts.push(attempt);
-    saveUserData(userData);
+    saveUserData(userId, userData);
     res.json({ analysis });
   } catch (err) {
     console.error(err);
@@ -266,18 +271,25 @@ app.get('/api/questions', (req, res) => {
 
 // Endpoint: Get mistakes by date range
 app.get('/api/mistakes', (req, res) => {
-  const { range } = req.query; // 'current', '7days', '30days'
-  const userData = loadUserData();
+  const { range, userId, mode } = req.query; // add mode to query
+  const uid = userId || uuidv4();
+  const userData = loadUserData(uid);
   const attempts = userData.attempts || [];
   if (range === 'current') {
     if (attempts.length === 0) return res.json([]);
-    return res.json(attempts[attempts.length - 1].mistakes.map(m => ({ ...m, attemptTimestamp: attempts[attempts.length - 1].timestamp })));
+    // Filter by mode if provided
+    const filtered = mode ? attempts.filter(a => a.mode === mode) : attempts;
+    if (filtered.length === 0) return res.json([]);
+    const last = filtered[filtered.length - 1];
+    return res.json(last.mistakes.map(m => ({ ...m, attemptTimestamp: last.timestamp })));
   }
   const now = Date.now();
   let fromDate = 0;
   if (range === '7days') fromDate = now - 7 * 24 * 60 * 60 * 1000;
   if (range === '30days') fromDate = now - 30 * 24 * 60 * 60 * 1000;
-  const filtered = getMistakesByDateRange(attempts, fromDate, now);
+  let filteredAttempts = attempts;
+  if (mode) filteredAttempts = attempts.filter(a => a.mode === mode);
+  const filtered = getMistakesByDateRange(filteredAttempts, fromDate, now);
   res.json(filtered);
 });
 

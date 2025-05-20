@@ -147,7 +147,7 @@ const Modal: React.FC<{ onClose: () => void; title: string; children: React.Reac
     onClick={onClose}
   >
     <div
-      style={{ background: '#fffde7', border: '1px solid #fbc02d', borderRadius: 10, padding: 24, minWidth: 340, maxWidth: 480, boxShadow: '0 4px 32px #0002', position: 'relative' }}
+      style={{ background: '#fffde7', border: '1px solid #fbc02d', borderRadius: 10, padding: 24, minWidth: 340, maxWidth: 480, boxShadow: '0 4px 32px #0002', position: 'relative', maxHeight: '70vh', overflowY: 'auto' }}
       onClick={e => e.stopPropagation()}
     >
       <button onClick={onClose} style={{ position: 'absolute', top: 10, right: 14, background: 'none', border: 'none', fontSize: 22, color: '#e65100', cursor: 'pointer' }} title="Close">×</button>
@@ -158,8 +158,11 @@ const Modal: React.FC<{ onClose: () => void; title: string; children: React.Reac
 );
 
 // Helper to fetch mistakes by range from backend
-export async function fetchMistakesByRange(range: 'current' | '7days' | '30days'): Promise<Note[]> {
-  const res = await fetch(`/api/mistakes?range=${range}`);
+export async function fetchMistakesByRange(range: 'current' | '7days' | '30days', userId?: string, mode?: string): Promise<Note[]> {
+  let url = `/api/mistakes?range=${range}`;
+  if (userId) url += `&userId=${userId}`;
+  if (mode) url += `&mode=${mode}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch mistakes');
   return await res.json();
 }
