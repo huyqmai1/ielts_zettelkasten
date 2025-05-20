@@ -1,0 +1,22 @@
+[
+  {
+    "id": "s1",
+    "question": "Describe a memorable event from your childhood. Why was it memorable?"
+  },
+  {
+    "id": "s2",
+    "question": "Talk about a place you would like to visit in the future. Why do you want to go there?"
+  },
+  {
+    "id": "s3",
+    "question": "Describe a person who has influenced you. How did they influence you?"
+  },
+  {
+    "id": "s4",
+    "question": "What is your favorite hobby and why do you enjoy it?"
+  },
+  {
+    "id": "s5",
+    "question": "Describe a book or movie that made a strong impression on you. What was it about?"
+  }
+] 
