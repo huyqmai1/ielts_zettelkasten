@@ -284,3 +284,11 @@ app.get('/api/mistakes', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 }); 
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'build')));
+
+// All other GET requests not handled before will return the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});

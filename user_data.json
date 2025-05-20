@@ -1,3 +1,96 @@
 {
-  "attempts": []
-} 
+  "attempts": [
+    {
+      "timestamp": 1747716236575,
+      "essay": "In our modern society, there is a growing debate about wheather unpaid community service should be required for high school students. This includes activities such as volunteering at charities, helping to clean up the neighborhood, or mentoring younger students. While some people believe this should be mandatory, others think it should remain voluntary. In my opinion, I mostly agree that community service should be a compulsory part of high school education, although there are some drawbacks to consider.\nOn one hand, mandatory community service can provide numerous benefits to students. Firstly, it helps them to develop important life skills such as teamwork, leadership and communication, which will be usefull in their future careers. For example, a student who teaches sports to younger children will learn how to explain concepts clearly and manage groups effectively. Secondly, community service creates awareness about social issues and helps students to become more empathetic citizens. When teenagers work directly with disadvantaged groups, they gain a better understanding of the challenges faced by others.\nHowever, there are also some valid arguments against making community service compulsary. The main concern is that forcing students to volunteer contradicts the very nature of volunteering, which should be done willingly. If students are required to participate, they might approach their service with resentment and not gain the intended benefits. Moreover, many high school students already face heavy academic pressures and extracurricular commitments, and adding mandatory community service could increase their stress levels and effect their academic performance.\nDespite these concerns, I believe the advantages outweigh the disadvantages. The key is to implement community service programs in a way that minimizes the negative aspects. For instance, schools can offer a variety of service options so that students can choose activities that align with their interests. They could also integrate community service with academic learning, making it more meaningful and less of a separate burden. Furthermore, if community service is introduced gradually and with proper support, students are more likely to embrace it positively.\nIn conclusion, althought there are valid concerns about making community service mandatory in high schools, I believe that the potential benefits to both students and society make it worthwhile. By providing students with real-world experiences outside the classroom, we prepare them to be more responsible, empathetic, and engaged citizens. Therefore, I mostly agree that unpaid community service should be a compulsory part of high school programmes, provided it is implemented thoughtfully and flexibly.RetryClaude can make mistakes. Please double-check responses. 3.7 Sonnet",
+      "questionId": "q1",
+      "analysis": "1. Error: \"wheather\"\nCorrect: \"whether\"\nExplanation: \"Whether\" is the correct spelling for the conjunction used to introduce alternatives.\nCategory: Vocabulary > Spelling\n\n2. Error: \"usefull\"\nCorrect: \"useful\"\nExplanation: \"Useful\" is the correct spelling; it does not have a double 'l'.\nCategory: Vocabulary > Spelling\n\n3. Error: \"compulsary\"\nCorrect: \"compulsory\"\nExplanation: \"Compulsory\" is the correct spelling for the adjective meaning required by law or a rule.\nCategory: Vocabulary > Spelling\n\n4. Error: \"effect their academic performance\"\nCorrect: \"affect their academic performance\"\nExplanation: \"Affect\" is the correct verb meaning to influence something, while \"effect\" is a noun.\nCategory: Vocabulary > Word Choice\n\n5. Error: \"althought\"\nCorrect: \"although\"\nExplanation: \"Although\" is the correct spelling for the conjunction used to introduce a contrast.\nCategory: Vocabulary > Spelling\n\n6. Error: \"programmes\"\nCorrect: \"programs\"\nExplanation: \"Programs\" is the preferred spelling in American English, which is typically used in IELTS.\nCategory: Vocabulary > Word Choice\n\n7. Error: \"leadership and communication, which will be usefull\"\nCorrect: \"leadership, and communication, which will be useful\"\nExplanation: A comma is needed after \"leadership\" to separate items in a list.\nCategory: Grammar > Punctuation\n\n8. Error: \"I mostly agree that community service should be a compulsory part of high school education\"\nCorrect: \"I agree that community service should be a compulsory part of high school education\"\nExplanation: \"Mostly agree\" is informal and imprecise; \"agree\" is more direct and appropriate for academic writing.\nCategory: Vocabulary > Register\n\n9. Error: \"effectively. Secondly, community service creates awareness\"\nCorrect: \"effectively. Secondly, it creates awareness\"\nExplanation: The pronoun \"it\" is needed to maintain clarity and cohesion.\nCategory: Structure > Cohesion\n\n10. Error: \"By providing students with real-world experiences outside the classroom, we prepare them\"\nCorrect: \"By providing students with real-world experiences outside the classroom, schools prepare them\"\nExplanation: The subject \"schools\" is needed to clarify who is preparing the students.\nCategory: Grammar > Sentence Fragments\n\nStrengths:\n- The essay addresses all parts of the question, discussing both the advantages and disadvantages of compulsory community service.\n- The essay uses a clear and logical structure, with well-organized paragraphs.\n- The tone is appropriate for an academic essay, maintaining formality throughout.\n\nSummary:\nThe essay effectively addresses the task by discussing both sides of the argument regarding compulsory community service in high schools. It is well-structured and maintains an appropriate academic tone. However, there are several spelling errors and some issues with word choice and punctuation that need to be corrected. Overall, the essay presents a coherent argument with relevant examples and suggestions for implementation.",
+      "mistakes": [
+        {
+          "error": "\"wheather\"",
+          "correct": "\"whether\"",
+          "explanation": "\"Whether\" is the correct spelling for the conjunction used to introduce alternatives.",
+          "category": "Vocabulary > Spelling"
+        },
+        {
+          "error": "\"usefull\"",
+          "correct": "\"useful\"",
+          "explanation": "\"Useful\" is the correct spelling; it does not have a double 'l'.",
+          "category": "Vocabulary > Spelling"
+        },
+        {
+          "error": "\"compulsary\"",
+          "correct": "\"compulsory\"",
+          "explanation": "\"Compulsory\" is the correct spelling for the adjective meaning required by law or a rule.",
+          "category": "Vocabulary > Spelling"
+        },
+        {
+          "error": "\"effect their academic performance\"",
+          "correct": "\"affect their academic performance\"",
+          "explanation": "\"Affect\" is the correct verb meaning to influence something, while \"effect\" is a noun.",
+          "category": "Vocabulary > Word Choice"
+        },
+        {
+          "error": "\"althought\"",
+          "correct": "\"although\"",
+          "explanation": "\"Although\" is the correct spelling for the conjunction used to introduce a contrast.",
+          "category": "Vocabulary > Spelling"
+        },
+        {
+          "error": "\"programmes\"",
+          "correct": "\"programs\"",
+          "explanation": "\"Programs\" is the preferred spelling in American English, which is typically used in IELTS.",
+          "category": "Vocabulary > Word Choice"
+        },
+        {
+          "error": "\"leadership and communication, which will be usefull\"",
+          "correct": "\"leadership, and communication, which will be useful\"",
+          "explanation": "A comma is needed after \"leadership\" to separate items in a list.",
+          "category": "Grammar > Punctuation"
+        },
+        {
+          "error": "\"I mostly agree that community service should be a compulsory part of high school education\"",
+          "correct": "\"I agree that community service should be a compulsory part of high school education\"",
+          "explanation": "\"Mostly agree\" is informal and imprecise; \"agree\" is more direct and appropriate for academic writing.",
+          "category": "Vocabulary > Register"
+        },
+        {
+          "error": "\"effectively. Secondly, community service creates awareness\"",
+          "correct": "\"effectively. Secondly, it creates awareness\"",
+          "explanation": "The pronoun \"it\" is needed to maintain clarity and cohesion.",
+          "category": "Structure > Cohesion"
+        },
+        {
+          "error": "\"By providing students with real-world experiences outside the classroom, we prepare them\"",
+          "correct": "\"By providing students with real-world experiences outside the classroom, schools prepare them\"",
+          "explanation": "The subject \"schools\" is needed to clarify who is preparing the students.",
+          "category": "Grammar > Sentence Fragments"
+        }
+      ],
+      "mode": "writing"
+    },
+    {
+      "timestamp": 1747716327478,
+      "essay": "Thank you for watching!\n",
+      "questionId": "s4",
+      "analysis": "1. Error: Thank you for watching!\nCorrect: My favorite hobby is painting because it allows me to express my creativity and relax.\nExplanation: The response does not address the question about the speaker's favorite hobby and why they enjoy it. Instead, it seems to be an unrelated closing statement.\nCategory: Task Achievement > Addressing All Parts\n\nStrengths:\n- None identified due to lack of relevant content.\n\nSummary:\nThe response fails to address the question about the speaker's favorite hobby and why they enjoy it. The answer provided is unrelated and does not contain any relevant information or structure to evaluate further.",
+      "mistakes": [
+        {
+          "error": "Thank you for watching!",
+          "correct": "My favorite hobby is painting because it allows me to express my creativity and relax.",
+          "explanation": "The response does not address the question about the speaker's favorite hobby and why they enjoy it. Instead, it seems to be an unrelated closing statement.",
+          "category": "Task Achievement > Addressing All Parts"
+        }
+      ],
+      "mode": "speaking"
+    },
+    {
+      "timestamp": 1747742675212,
+      "essay": "abc123",
+      "questionId": "q1",
+      "analysis": "I'm sorry, but the essay text you provided appears to be incomplete or incorrect. Please provide the full essay text so that I can analyze it for you.",
+      "mistakes": [],
+      "mode": "writing"
+    }
+  ]
+}
