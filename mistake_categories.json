@@ -1,0 +1,112 @@
+[
+  {
+    "category": "Grammar",
+    "subcategory": "Subject-Verb Agreement",
+    "description": "Mistakes where the subject and verb do not agree in number or person."
+  },
+  {
+    "category": "Grammar",
+    "subcategory": "Tense Consistency",
+    "description": "Errors in maintaining the same tense throughout a sentence or passage."
+  },
+  {
+    "category": "Grammar",
+    "subcategory": "Articles",
+    "description": "Incorrect use of 'a', 'an', or 'the'."
+  },
+  {
+    "category": "Grammar",
+    "subcategory": "Prepositions",
+    "description": "Incorrect or missing prepositions."
+  },
+  {
+    "category": "Grammar",
+    "subcategory": "Punctuation",
+    "description": "Errors in the use of commas, periods, semicolons, etc."
+  },
+  {
+    "category": "Grammar",
+    "subcategory": "Sentence Fragments",
+    "description": "Incomplete sentences that lack a subject or verb."
+  },
+  {
+    "category": "Grammar",
+    "subcategory": "Run-on Sentences",
+    "description": "Two or more independent clauses joined without proper punctuation."
+  },
+  {
+    "category": "Vocabulary",
+    "subcategory": "Word Choice",
+    "description": "Using an incorrect or imprecise word."
+  },
+  {
+    "category": "Vocabulary",
+    "subcategory": "Collocations",
+    "description": "Incorrect combinations of words that do not naturally go together."
+  },
+  {
+    "category": "Vocabulary",
+    "subcategory": "Register",
+    "description": "Using language that is too formal or informal for the context."
+  },
+  {
+    "category": "Vocabulary",
+    "subcategory": "Spelling",
+    "description": "Misspelled words."
+  },
+  {
+    "category": "Vocabulary",
+    "subcategory": "Repetition",
+    "description": "Unnecessary repetition of words or phrases."
+  },
+  {
+    "category": "Structure",
+    "subcategory": "Paragraph Organization",
+    "description": "Poorly structured or disorganized paragraphs."
+  },
+  {
+    "category": "Structure",
+    "subcategory": "Coherence",
+    "description": "Lack of logical flow between sentences or ideas."
+  },
+  {
+    "category": "Structure",
+    "subcategory": "Cohesion",
+    "description": "Inadequate use of linking words or references."
+  },
+  {
+    "category": "Structure",
+    "subcategory": "Linking Words",
+    "description": "Incorrect or missing linking words."
+  },
+  {
+    "category": "Task Achievement",
+    "subcategory": "Addressing All Parts",
+    "description": "Failure to address all parts of the essay question."
+  },
+  {
+    "category": "Task Achievement",
+    "subcategory": "Answer Relevance",
+    "description": "Providing information that is not relevant to the question."
+  },
+  {
+    "category": "Task Achievement",
+    "subcategory": "Task Response",
+    "description": "Not fully developing or supporting the answer."
+  },
+  {
+    "category": "Tone & Register",
+    "subcategory": "Formality",
+    "description": "Using language that is too formal or informal."
+  },
+  {
+    "category": "Tone & Register",
+    "subcategory": "Appropriateness",
+    "description": "Using language that is not appropriate for the context."
+  },
+  {
+    "category": "Other",
+    "subcategory": "Uncategorized",
+    "description": "Mistakes that do not fit into the above categories."
+  }
+] 
