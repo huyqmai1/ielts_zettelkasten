@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 import { MistakeTree, fetchMistakesByRange } from './MistakeTree';
 import { quizQuestions, QuizQuestion } from './QuizQuestions';
@@ -60,18 +61,10 @@ function getRandomQuestionForSubcategory(category: string, subcategory: string):
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
-function getUserId() {
-  let userId = localStorage.getItem('userId');
-  if (!userId) {
-    userId = crypto.randomUUID();
-    localStorage.setItem('userId', userId);
-  }
-  return userId;
-}
-
 function App() {
   const [essay, setEssay] = useState('');
   const [analysis, setAnalysis] = useState<string | null>(null);
+  const [score, setScore] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
@@ -83,10 +76,40 @@ function App() {
   const [visualizationNotes, setVisualizationNotes] = useState<Note[]>([]);
   const [mode, setMode] = useState<'writing' | 'speaking'>('writing');
   const [audioBase64, setAudioBase64] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+
+  // Fetch user info on mount
+  useEffect(() => {
+    fetch('/api/user', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => setUser(data.user));
+  }, []);
+
+  // Helper to get userId (Google ID if logged in, else UUID)
+  function getEffectiveUserId() {
+    if (user && user.id) return user.id;
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = uuidv4();
+      localStorage.setItem('userId', userId);
+    }
+    return userId;
+  }
+
+  const userId = getEffectiveUserId();
+
+  // Login/Logout handlers
+  const handleLogin = () => {
+    window.location.href = '/auth/google';
+  };
+  const handleLogout = () => {
+    fetch('/api/logout', { credentials: 'include' })
+      .then(() => setUser(null));
+  };
 
   // Fetch questions on mount or when mode changes
   useEffect(() => {
-    fetch(`/api/questions?mode=${mode}`)
+    fetch(`/api/questions?mode=${mode}`, { credentials: 'include' })
       .then(res => res.json())
       .then((data: Question[]) => {
         setQuestions(data);
@@ -105,8 +128,6 @@ function App() {
     setQuizFeedback({});
     setAudioBase64(null);
   }, [mode]);
-
-  const userId = getUserId();
 
   useEffect(() => {
     if (mistakeRange === 'current' || mistakeRange === '7days' || mistakeRange === '30days') {
@@ -142,15 +163,18 @@ function App() {
     setError(null);
     setAnalysis(null);
     setNotes([]);
+    setScore(null);
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ essay, questionId: selectedQuestionId, userId }),
       });
       if (!response.ok) throw new Error('Failed to analyze essay');
       const data = await response.json();
       setAnalysis(data.analysis);
+      setScore(data.score ?? null);
       // Parse notes from analysis
       const parsedNotes = parseNotesFromAnalysis(data.analysis);
       setNotes(parsedNotes);
@@ -172,15 +196,18 @@ function App() {
     setError(null);
     setAnalysis(null);
     setNotes([]);
+    setScore(null);
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ questionId: selectedQuestionId, mode: 'speaking', audioBase64, userId }),
       });
       if (!response.ok) throw new Error('Failed to analyze speaking answer');
       const data = await response.json();
       setAnalysis(data.analysis);
+      setScore(data.score ?? null);
       // Parse notes from analysis
       const parsedNotes = parseNotesFromAnalysis(data.analysis);
       setNotes(parsedNotes);
@@ -215,15 +242,28 @@ function App() {
 
   return (
     <div className="App" style={{ maxWidth: 900, margin: '0 auto', padding: 24, fontFamily: 'sans-serif' }}>
-      <header style={{ marginBottom: 32 }}>
-        <h1>IELTS Zettelkasten</h1>
-        <p style={{ color: '#555' }}>Personalized IELTS Writing Practice & Knowledge Base</p>
-        <div style={{ marginTop: 16 }}>
-          <label style={{ fontWeight: 500, marginRight: 8 }}>Mode:</label>
-          <select value={mode} onChange={e => setMode(e.target.value as any)}>
-            <option value="writing">Writing</option>
-            <option value="speaking">Speaking</option>
-          </select>
+      <header style={{ marginBottom: 32, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <h1>IELTS Zettelkasten</h1>
+          <p style={{ color: '#555' }}>Personalized IELTS Writing Practice & Knowledge Base</p>
+          <div style={{ marginTop: 16 }}>
+            <label style={{ fontWeight: 500, marginRight: 8 }}>Mode:</label>
+            <select value={mode} onChange={e => setMode(e.target.value as any)}>
+              <option value="writing">Writing</option>
+              <option value="speaking">Speaking</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          {user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img src={user.photos && user.photos[0] && user.photos[0].value} alt="profile" style={{ width: 32, borderRadius: '50%' }} />
+              <span>{user.displayName}</span>
+              <button onClick={handleLogout} style={{ marginLeft: 8 }}>Logout</button>
+            </div>
+          ) : (
+            <button onClick={handleLogin}>Sign in with Google</button>
+          )}
         </div>
       </header>
       <main>
@@ -282,6 +322,11 @@ function App() {
           <h2>3. Analysis</h2>
           <div style={{ background: '#e3f2fd', padding: 16, borderRadius: 8, minHeight: 60 }}>
             {error && <div style={{ color: 'red' }}>{error}</div>}
+            {score !== null && (
+              <div style={{ fontSize: 22, fontWeight: 700, color: '#1976d2', marginBottom: 12 }}>
+                Estimated IELTS Score: <span style={{ color: '#388e3c' }}>{score}</span> / 9
+              </div>
+            )}
             {analysis ? (
               <pre style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>{analysis}</pre>
             ) : !loading ? (

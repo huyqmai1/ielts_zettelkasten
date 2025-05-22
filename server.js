@@ -7,9 +7,19 @@ const fs = require('fs');
 const path = require('path');
 const tmp = require('tmp');
 const { v4: uuidv4 } = require('uuid');
+const session = require('express-session');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -94,13 +104,15 @@ Correct: <the correct version>
 Explanation: <explanation of the rule/principle violated>
 Category: <choose the closest match from the list above, e.g., Grammar > Subject-Verb Agreement>
 
-After listing all mistakes, add a section:
+After listing all mistakes, add these sections:
 
 Strengths:
 - <list strengths>
 
 Summary:
 <overall summary>
+
+Score Estimate: <IELTS band score estimate for this essay, as a number between 0 and 9, e.g., 6.5>
 
 Essay:
 """
@@ -115,7 +127,7 @@ Respond ONLY in the above format. Do not add extra commentary or formatting.`;
       { role: 'system', content: 'You are an expert IELTS writing coach.' },
       { role: 'user', content: prompt },
     ],
-    max_tokens: 800,
+    max_tokens: 2000,
     temperature: 0.1,
   });
   return completion.choices[0].message.content;
@@ -162,13 +174,15 @@ Correct: <the correct version>
 Explanation: <explanation of the rule/principle violated>
 Category: <choose the closest match from the list above, e.g., Grammar > Subject-Verb Agreement>
 
-After listing all mistakes, add a section:
+After listing all mistakes, add these sections:
 
 Strengths:
 - <list strengths>
 
 Summary:
 <overall summary>
+
+Score Estimate: <IELTS band score estimate for this answer, as a number between 0 and 9, e.g., 6.5>
 
 Spoken answer:
 """
@@ -183,11 +197,62 @@ Respond ONLY in the above format. Do not add extra commentary or formatting.`;
       { role: 'system', content: 'You are an expert IELTS speaking coach.' },
       { role: 'user', content: prompt },
     ],
-    max_tokens: 800,
+    max_tokens: 900,
     temperature: 0.1,
   });
   return { analysis: completion.choices[0].message.content, transcript };
 }
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your_secret',
+  resave: false,
+  saveUninitialized: false,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: 'https://ielts.ap-southeast-1.elasticbeanstalk.com/auth/google/callback',
+}, (accessToken, refreshToken, profile, done) => {
+  // You can save the profile info to your DB here if needed
+  return done(null, profile);
+}));
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser((obj, done) => {
+  done(null, obj);
+});
+
+// Google OAuth routes
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    // Redirect to frontend after successful login
+    res.redirect('/');
+  }
+);
+
+app.get('/api/logout', (req, res) => {
+  req.logout(() => {
+    res.json({ success: true });
+  });
+});
+
+app.get('/api/user', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({ user: req.user });
+  } else {
+    res.json({ user: null });
+  }
+});
 
 app.post('/api/analyze', async (req, res) => {
   const { essay, questionId, mode = 'writing', audioBase64 } = req.body;
@@ -238,7 +303,16 @@ app.post('/api/analyze', async (req, res) => {
       }
       return notes;
     }
+    // Parse score estimate from analysis
+    function parseScoreFromAnalysis(analysis) {
+      const scoreMatch = analysis.match(/Score Estimate:\s*([0-9](?:\.[0-9])?)/i);
+      if (scoreMatch) {
+        return parseFloat(scoreMatch[1]);
+      }
+      return null;
+    }
     const mistakes = parseNotesFromAnalysis(analysis);
+    const score = parseScoreFromAnalysis(analysis);
     // Log attempt to user_data.json
     const userId = req.body.userId || uuidv4();
     const userData = loadUserData(userId);
@@ -248,12 +322,13 @@ app.post('/api/analyze', async (req, res) => {
       questionId,
       analysis,
       mistakes,
+      score,
       mode,
     };
     if (!userData.attempts) userData.attempts = [];
     userData.attempts.push(attempt);
     saveUserData(userId, userData);
-    res.json({ analysis });
+    res.json({ analysis, score });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to analyze answer.' });
